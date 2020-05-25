@@ -1,0 +1,22 @@
+#docker-compose.yml
+version: "3"
+services:
+  #We add postgress as a database to use RoR
+  db:
+    image: postgres
+    #We allow all kind of connections to that postgres db
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    #setting up the volume on the container that will contain the database
+    volumes:
+      - /var/lib/postgresql/data
+  web:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/myapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
